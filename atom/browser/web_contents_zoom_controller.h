@@ -51,6 +51,15 @@ class WebContentsZoomController
     ZOOM_MODE_DISABLED,
   };
 
+  enum ZoomDirection {
+    // Represents a change in zoom where the zoom level is increasing (zooming
+    // in).
+    ZOOM_DIRECTION_IN,
+    // Represents a change in zoom where the zoom level is decreasing (zooming
+    // out).
+    ZOOM_DIRECTION_OUT
+  };
+
   explicit WebContentsZoomController(content::WebContents* web_contents);
   ~WebContentsZoomController() override;
 

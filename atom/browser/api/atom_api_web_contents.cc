@@ -234,6 +234,27 @@ struct Converter<atom::api::WebContents::Type> {
   }
 };
 
+template <>
+struct Converter<atom::WebContentsZoomController::ZoomDirection> {
+  static v8::Local<v8::Value> ToV8(
+      v8::Isolate* isolate,
+      atom::WebContentsZoomController::ZoomDirection val) {
+    using ZoomDirection = atom::WebContentsZoomController::ZoomDirection;
+    std::string direction = "";
+    switch (val) {
+      case ZoomDirection::ZOOM_DIRECTION_IN:
+        direction = "in";
+        break;
+      case ZoomDirection::ZOOM_DIRECTION_OUT:
+        direction = "out";
+        break;
+      default:
+        break;
+    }
+    return mate::ConvertToV8(isolate, direction);
+  }
+};
+
 }  // namespace mate
 
 namespace atom {
@@ -631,7 +652,12 @@ content::KeyboardEventProcessingResult WebContents::PreHandleKeyboardEvent(
 }
 
 void WebContents::ContentsZoomChange(bool zoom_in) {
-  Emit("zoom-changed", zoom_in);
+  const atom::WebContentsZoomController::ZoomDirection zoom_direction =
+      zoom_in
+          ? atom::WebContentsZoomController::ZoomDirection::ZOOM_DIRECTION_IN
+          : atom::WebContentsZoomController::ZoomDirection::ZOOM_DIRECTION_OUT;
+
+  Emit("zoom-changed", zoom_direction);
 }
 
 void WebContents::EnterFullscreenModeForTab(
