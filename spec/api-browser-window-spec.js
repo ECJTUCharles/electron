@@ -3059,13 +3059,14 @@ describe('BrowserWindow module', () => {
       w.destroy()
       w = new BrowserWindow()
       w.webContents.once('did-finish-load', () => {
-        w.once('enter-full-screen', () => {
-          w.once('leave-html-full-screen', () => {
-            done()
+        w.webContents.executeJavaScript('document.body.webkitRequestFullscreen()', true).then(() => {
+          w.once('enter-full-screen', () => {
+            w.once('leave-html-full-screen', () => {
+              done()
+            })
+            w.setFullScreen(false)
           })
-          w.setFullScreen(false)
         })
-        w.webContents.executeJavaScript('document.body.webkitRequestFullscreen()', true)
       })
       w.loadURL('about:blank')
     })
@@ -3228,7 +3229,7 @@ describe('BrowserWindow module', () => {
             const lastPanelId = UI.inspectorView._tabbedPane._tabs.peekLast().id
             UI.inspectorView.showPanel(lastPanelId)
           }
-          devToolsWebContents.executeJavaScript(`(${showLastPanel})()`, false, () => {
+          devToolsWebContents.executeJavaScript(`(${showLastPanel})()`, false).then(() => {
             showPanelTimeoutId = setTimeout(show, 100)
           })
         }
