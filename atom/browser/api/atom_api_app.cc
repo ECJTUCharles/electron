@@ -1066,7 +1066,7 @@ void App::ImportCertificate(const base::DictionaryValue& options,
     CertificateManagerModel::Create(
         browser_context.get(),
         base::BindRepeating(&App::OnCertificateManagerModelCreated,
-                            base::Unretained(this), base::Passed(&copy),
+                            base::Unretained(this), std::move(&copy),
                             callback));
     return;
   }
